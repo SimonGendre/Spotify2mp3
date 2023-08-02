@@ -8,15 +8,15 @@ ce script permet (plus ou moins facilement) de  télécharcher votre playlist sp
 
 
 ## Commandes (administrateur)
-´´´powershell
+---
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 choco install ffmpeg
-´´´
+---
 
 ### Structures des fichiers
 une fois tout mis en place, les fichiers devraient ressembler plus ou moins à ça.
-
+---
 └───Spotify2mp3
     │   songs.csv
     │   Spotify2MP3.ps1
@@ -25,3 +25,4 @@ une fois tout mis en place, les fichiers devraient ressembler plus ou moins à �
     └───songs
         |
         ...
+---
