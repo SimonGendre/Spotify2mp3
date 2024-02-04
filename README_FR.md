@@ -1,7 +1,7 @@
 # Spotify2mp3
 ce script permet (plus ou moins facilement) de  télécharcher votre playlist spotify préférée
 # Setup 
-1. Ce script fonctionne grâce à [spotdl](https://github.com/spotDL/spotify-downloader){:target="_blank"}. Il faudra donc s'assurer qu'il est installé.
+1. Ce script fonctionne grâce à [spotdl](https://github.com/spotDL/spotify-downloader). Il faudra donc s'assurer qu'il est installé.
 2. Il faudra ensuite définir les playlists, albums, musiques etc... à télécharger. Pour cela, les deux fichiers textes devront être modifiés.
 
 ## playlists.txt
@@ -24,7 +24,7 @@ https://open.spotify.com/album/1U0A6RPNJB05PtuBcaTM7o
 
 # Fonctionnement 
 Avant de lancer le script, il va falloir définir $musicDir (première ligne) afin de préciser le dossier dans lequel les musiques seront ~~piratées~~téléchargées. Le script se chargera alors de créer les bon dossier et d'y mettre la bonne musique (Et non pas de la bonne musique si les fichiers texte ne sont pas les miens). Spotdl se chargera de mettre les tags mp3 en fonction de Spotify et de télécharger les mp3 depuis youtube music. 
-
+Une fois que tout est téléchargé, le script va supprimer tout les fichiers qui sont à double entre Playlists et Music, seule la version de Playlists est gardée. De cette manière, il y a qu'un seul de chaque fichier. 
 
 ```
 $musicDir

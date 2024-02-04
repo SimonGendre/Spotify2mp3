@@ -1,4 +1,4 @@
-$musicDir = "B:\Audio\music"
+$musicDir = $PSScriptRoot
 
 # Capture the start time
 $StartTime = Get-Date
