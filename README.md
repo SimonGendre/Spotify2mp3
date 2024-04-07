@@ -36,7 +36,7 @@ $musicDir
 |   |-- Folder1
 |   |   |-- manyFiles.mp3
 |   |
-|   |-- GringeMusic
+|   |-- CringeMusic
 |       |-- manyFiles.mp3
 |
 |-- Music
