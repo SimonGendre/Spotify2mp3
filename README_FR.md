@@ -15,7 +15,7 @@ PlugNRock;https://open.spotify.com/playlist/5XkjIzp66gB9nh7N6QjFbl
 Le script va d'abord créer le dossier puis va y mettre toutes les musiques de la playlist/album. Il n'y a pas de limites de dossier so enjoy :)
 
 ## 2DL.txt
-2DL.txt permet de spécifier les trucs à télécharger sans les trier. Tout ce qui est mit ici sera télécharger dans le dossier "Music" (sans doublons). les liens peuvent être mis sans ordre spécifique, ils seront tous traiter à un moment ou un autre. les lignes qui commencent par "#" sont considérées comme des commentaires et ne sont pas lues (comme la doc en général). Voici un exemple avec un seul lien, si tu veux le gros exemple regarge le fichier directement.
+2DL.txt permet de spécifier les trucs à télécharger sans les trier. Tout ce qui est mit ici sera télécharger dans le dossier "Music" (sans doublons). les liens peuvent être mis sans ordre spécifique, ils seront tous traiter à un moment ou un autre. les lignes qui commencent par "#" sont considérées comme des commentaires et ne sont pas lues (comme la doc en général). Voici un exemple avec un seul lien, si tu veux le gros exemple regarde le fichier directement.
 
 ```plaintext
 #Outer Wilds (Original Soundtrack)
@@ -32,7 +32,7 @@ $musicDir
 |   |-- Dossier1
 |   |   |-- beaucoupDeFichiers.mp3
 |   |
-|   |-- LaDanceDesCanard
+|   |-- LaDanceDesCanards
 |       |-- beaucoupDeFichiers.mp3
 |
 |-- Music

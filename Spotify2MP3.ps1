@@ -1,51 +1,87 @@
-$musicDir = $PSScriptRoot
+param(
+    [Parameter()]
+    [string]$musicDir,
 
-# Capture the start time
+    [Parameter()]
+    [string]$playlistsFile,
+
+    [Parameter()]
+    [string]$2dlFile,
+
+    [Parameter()]
+    [switch]$OverwriteExisting
+)
+
+# Default values for parameters
+$defaultMusicDir = "B:\Audio\music"
+$defaultPlaylistsFile = "$PSScriptRoot\playlists.txt"
+$default2dlFile = "$PSScriptRoot\2DL.txt"
+
+# Set default values if parameters are not provided
+if (-not $musicDir) {
+    $musicDir = $defaultMusicDir
+}
+
+if (-not $playlistsFile) {
+    $playlistsFile = $defaultPlaylistsFile
+}
+
+if (-not $2dlFile) {
+    $2dlFile = $default2dlFile
+}
+
+# Display script start time
 $StartTime = Get-Date
 
-#download the playlists
+# Create necessary directories if not exist
+$directories = @("$musicDir\Playlists", "$musicDir\Music", "$PSScriptRoot\syncFiles")
+foreach ($directory in $directories) {
+    if (!(Test-Path -Type Container $directory)) {
+        Write-Host -ForegroundColor Cyan "$directory directory not found. Creating..."
+        $null = New-Item -Path $directory -ItemType Directory -Force -ErrorAction SilentlyContinue
+    }
+}
+
+# Remove old music if OverwriteExisting switch is set
+if ($OverwriteExisting) {
+    Write-Host -ForegroundColor Red "Script is set to overwrite existing data. Removing old mp3..."
+    Remove-Item -Recurse "$musicDir\Music\*", "$musicDir\Playlists\*"
+}
+
+# Download playlists
 Set-Location "$musicDir\Playlists"
-$fileContent = Get-Content -Path "$PSScriptRoot\playlists.txt" -Encoding UTF8
+$fileContent = Get-Content -Path $playlistsFile -Encoding UTF8
 
 $fileContent | ForEach-Object {
-    
     $line = $_.Trim()
-   
-
-    if (!($line.StartsWith("#"))) {
-        $name = $($line -split (";"))[0]
-        $url = $($line -split (";"))[1]
-        Write-Host "Downloading: $name"
-        if (!(Test-Path -Type Container $musicDir\Playlists\$name)) {
-            mkdir $musicDir\Playlists\$name
+    if (-not $line.StartsWith("#")) {
+        $name, $url = $line -split ";"
+        Write-Host "Downloading playlist: $name" -ForegroundColor Cyan
+        if (!(Test-Path -Type Container "$musicDir\Playlists\$name")) {
+            Write-Host -ForegroundColor Cyan "$name directory not found. Creating..."
+            $null = New-Item -Path "$musicDir\Playlists\$name" -ItemType Directory -Force -ErrorAction SilentlyContinue
         }
-        Set-Location $musicDir\Playlists\$name
-        python.exe -m spotdl --user-auth --overwrite "skip" $($url)
+        Set-Location "$musicDir\Playlists\$name"
+        spotdl --user-auth --overwrite "skip" --save-file "$PSScriptRoot\syncFiles\$name.spotdl" sync $url
         Set-Location $musicDir
     }
 }
 
-
-#download the music
+# Download music in global music folder
+Write-Host -ForegroundColor Cyan "Playlists finished downloading. Starting bulk music download..."
 Set-Location "$musicDir\Music"
-$fileContent = Get-Content -Path "$PSScriptRoot\2DL.txt" -Encoding UTF8
+$fileContent = Get-Content -Path $2dlFile -Encoding UTF8
 
-$spotdlInstruction = "spotdl --user-auth --overwrite 'skip' download "
-
+$spotdlInstruction = "spotdl --user-auth --overwrite 'skip' --save-file '$PSScriptRoot\syncFiles\bulk.spotdl' sync "
 $fileContent | ForEach-Object {
     $line = $_.Trim()
-    if (!($line.StartsWith("#"))) {
-        
+    if (-not $line.StartsWith("#")) {
         $spotdlInstruction += "$line "
-               
-        # Replace the existing line with a modified one (with "#" added)
-        #(Get-Content -Path "$PSScriptRoot\2DL.txt" -Raw) -replace [regex]::Escape($line), "#$line" | Set-Content -Path "$PSScriptRoot\2DL.txt"
     }
 }
 powershell.exe $spotdlInstruction
 
-
-# Checks for duplicates between albums and playlists
+# Check for duplicates between albums and playlists
 $playlistsDir = "$musicDir\Playlists\"
 $musicpath = "$musicDir\Music\"
 
@@ -58,20 +94,19 @@ foreach ($song in $playlistFiles) {
 
     if ($matchingMusicFile) {
         Write-Host "Duplicate $baseName" -ForegroundColor Red
-        Remove-Item $matchingMusicFile.FullName
+        try {
+            Remove-Item $matchingMusicFile.FullName -ErrorAction SilentlyContinue
+        }
+        catch {
+            # Ignore any errors while removing duplicate files
+        }
     }
 }
 
+Set-Location $PSScriptRoot
 
-
-
-
-# Capture the end time
+# Display script end time and execution duration
 $EndTime = Get-Date
-
-# Calculate elapsed time
 $ElapsedTime = New-TimeSpan -Start $StartTime -End $EndTime
-
-# Display the elapsed time
 Write-Host "Script execution took $($ElapsedTime.Hours) hours, $($ElapsedTime.Minutes) minutes, and $($ElapsedTime.Seconds) seconds."
 Pause
